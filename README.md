@@ -25,21 +25,31 @@ All three are annotated read-only and idempotent.
 
 ## Install
 
+Install straight from this repository — no npm release required, npm clones and
+packs it for you:
+
 ```bash
-npm install -g @sophiadata/openviking-mcp
+npm install -g github:SophiaData/openviking-mcp
 ```
 
-Not published to npm yet — install from the repository for now:
+Pin a released version instead of tracking `master`:
+
+```bash
+npm install -g github:SophiaData/openviking-mcp#v0.1.0
+```
+
+Upgrade or remove later:
+
+```bash
+npm install -g github:SophiaData/openviking-mcp   # re-run to upgrade
+npm uninstall -g openviking-mcp
+```
+
+Or run from a checkout without installing anything globally:
 
 ```bash
 git clone https://github.com/SophiaData/openviking-mcp.git
 node openviking-mcp/src/server.mjs
-```
-
-Or run from a checkout without installing:
-
-```bash
-node /path/to/openviking-mcp/src/server.mjs
 ```
 
 ## Configure
