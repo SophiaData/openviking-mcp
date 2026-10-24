@@ -206,6 +206,29 @@ const TOOLS = [
   },
 ];
 
+/** Render the fs/tree result (an array of entries) as indented text. */
+function renderTree(node, depth = 0) {
+  if (node === null || node === undefined) return '';
+  if (typeof node === 'string') return node;
+  if (Array.isArray(node)) {
+    return node.map((entry) => renderTree(entry, depth)).filter(Boolean).join('\n');
+  }
+  const indent = '  '.repeat(depth);
+  const name = node.rel_path ?? node.uri ?? '';
+  const isDir = node.isDir ?? node.is_dir ?? false;
+  const lines = [];
+  if (name) lines.push(`${indent}${isDir ? '[dir] ' : ''}${name}`);
+  const abstract = node.abstract ?? node.summary ?? '';
+  if (abstract) {
+    for (const line of String(abstract).split('\n')) lines.push(`${indent}  ${line}`);
+  }
+  const children = node.children ?? node.entries ?? [];
+  if (Array.isArray(children) && children.length > 0) {
+    lines.push(renderTree(children, depth + 1));
+  }
+  return lines.filter(Boolean).join('\n');
+}
+
 async function callTool(name, args) {
   const cfg = config();
   if (name === 'ov_search') {
@@ -224,7 +247,13 @@ async function callTool(name, args) {
   if (name === 'ov_read') {
     if (!/^viking:\/\//.test(args.uri ?? '')) throw new Error('uri must start with viking://');
     const payload = await request('/api/v1/content/read', { method: 'GET', query: { uri: args.uri } });
-    const content = payload?.content ?? payload?.text ?? payload?.data ?? '';
+    // OpenViking wraps every response as { status, result }. For content/read,
+    // `result` is the document body itself (a string), not an object.
+    const body = typeof payload?.result === 'string' ? payload.result : payload?.result ?? payload;
+    const content =
+      typeof body === 'string'
+        ? body
+        : body?.content ?? body?.text ?? body?.data ?? '';
     return { text: clip(typeof content === 'string' ? content : JSON.stringify(content)), uri: args.uri };
   }
 
@@ -235,8 +264,9 @@ async function callTool(name, args) {
       method: 'GET',
       query: { uri, level: args.depth ?? 2 },
     });
-    const text = payload?.tree ?? payload?.text ?? JSON.stringify(payload, null, 2);
-    return { text: clip(String(text), 30_000), base_url: cfg.baseUrl };
+    const tree = payload?.result ?? payload;
+    const text = renderTree(tree);
+    return { text: clip(text, 30_000), base_url: cfg.baseUrl };
   }
 
   throw new Error(`unknown tool: ${name}`);
