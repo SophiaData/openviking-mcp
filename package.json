@@ -1,5 +1,5 @@
 {
-  "name": "@gtk96/openviking-mcp",
+  "name": "@sophiadata/openviking-mcp",
   "version": "0.1.0",
   "description": "Minimal MCP server that exposes OpenViking knowledge retrieval to any MCP-capable agent, without automatic memory capture",
   "type": "module",

@@ -26,7 +26,14 @@ All three are annotated read-only and idempotent.
 ## Install
 
 ```bash
-npm install -g @gtk96/openviking-mcp
+npm install -g @sophiadata/openviking-mcp
+```
+
+Not published to npm yet — install from the repository for now:
+
+```bash
+git clone https://github.com/SophiaData/openviking-mcp.git
+node openviking-mcp/src/server.mjs
 ```
 
 Or run from a checkout without installing:
