@@ -1,5 +1,5 @@
 {
-  "name": "@sophiadata/openviking-mcp",
+  "name": "@sophiadata-ai/openviking-mcp",
   "version": "0.1.1",
   "description": "Minimal MCP server that exposes OpenViking knowledge retrieval to any MCP-capable agent, without automatic memory capture",
   "type": "module",
@@ -21,7 +21,10 @@
   },
   "scripts": {
     "start": "node src/server.mjs",
-    "test": "node --test test/"
+    "test": "node --test"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "mcp",
